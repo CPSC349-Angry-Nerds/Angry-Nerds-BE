@@ -9,11 +9,11 @@ const userService = {
   getUsers(db) {
     return db
       .select('*')
-      .from('user');
+      .from('users');
   },
 
   validateUserName(db, username) {
-    return db('user')
+    return db('users')
       .where({ username })
       .first()
       .then(user => !!user);
@@ -22,7 +22,7 @@ const userService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('user')
+      .into('users')
       .returning('*')
       .then(([user]) => user );
   }
