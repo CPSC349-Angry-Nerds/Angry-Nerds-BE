@@ -1,7 +1,6 @@
 const express = require('express');
 const AuthorizationService = require('./authorization-service');
-const { middlwareAuth } = require('../../middleware/jwt-authorization');
-
+const { middlewareAuth } = require('../../middleware/jwt-authorization');
 const authRouter = express.Router();
 const parser = express.json();
 
@@ -29,7 +28,7 @@ const validateAuthRequest = (body) => {
 
 authRouter
   .route('/')
-  .post(parser, (req, res, next) => {
+  .post(parser, async (req, res, next) => {
     const { username, password } = req.body;
     const { error, isError } = validateAuthRequest(req.body);
     const db = req.app.get('db');
@@ -38,7 +37,7 @@ authRouter
     if (isError)
       return res.status(400).send({error});
     else
-      AuthorizationService
+      await AuthorizationService
         .getUser(db, username)
         .then(user => {
           if(!user)
@@ -55,22 +54,22 @@ authRouter
         .then(user => {
           const sub = user.username;
           const payload = {
-            user_id: user.id,
             username: user.username,
           };
-          res.send({ authToken: AuthService.createJsonWebToken(sub, payload) })
+          res.send({ authToken: AuthorizationService.createJsonWebToken(sub, payload) })
         })
         .catch(next);
-  }).put(requireAuth, (req, res, next) => {
+  })
+  .put(middlewareAuth, (req, res, next) => {
     try{
       const sub = req.user.username;
       const payload = {
         username: req.user.username
       };
-      res.send({ authToken: AuthService.createJsonWebToken(sub, payload) });
+      res.send({ authToken: AuthorizationService.createJsonWebToken(sub, payload) });
     } catch (error) {
       next(error);
     }
-  });
+});
 
 module.exports = authRouter;

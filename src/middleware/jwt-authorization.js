@@ -11,8 +11,8 @@ async function middlewareAuth(req, res, next) {
     bearerToken = authToken.slice(7, authToken.length);
 
   try {
-    const payload = AuthService.verifyJsonWebToken(bearerToken);
-    const user = await AuthService.getEmployeeWithUserName(req.app.get('db'), payload.sub);
+    const payload = AuthorizationService.verifyJsonWebToken(bearerToken);
+    const user = await AuthorizationService.getUserWithUserName(req.app.get('db'), payload.sub);
 
     if (!user)
       return res.status(401).json({ error: 'Unauthorized Request' });

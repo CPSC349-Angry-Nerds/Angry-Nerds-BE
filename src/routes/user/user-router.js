@@ -3,7 +3,6 @@ const userRouter = express.Router();
 const parser = express.json();
 const UserService = require('./user-service');
 const AuthorizationService = require('../authorization/authorization-service');
-const db = req.app.get('db');
 
 const errorHandler = {
   validateAuthRequest(body) {
@@ -39,6 +38,7 @@ const errorHandler = {
 userRouter
   .route('/')
   .get(async (req, res, next) => {
+    const db = req.app.get('db');
     await UserService
       .getUsers(db)
       .then(users => {
@@ -49,10 +49,12 @@ userRouter
       .catch(next);
   })
   .post(parser, async (req, res, next) => {
+   
     try
     {
       const { password, username } = req.body;
       const { isError, error } = errorHandler.validateUserRequest(req.body);
+      const db = req.app.get('db');
 
       if (isError)
         throw error;
