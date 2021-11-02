@@ -8,7 +8,7 @@ const userService = {
 
   getUsers(db) {
     return db
-      .select('*')
+      .select('users.username')
       .from('users');
   },
 
