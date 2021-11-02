@@ -5,30 +5,33 @@ const ForumService = require('./forum-service');
 const forumRouter = express.Router();
 const parser = express.json();
 
-forumRouter
-    //.all(middlewareAuth)    
+forumRouter  
     .route('/')
-    .get( parser, async (req, res, next) => {
+    .get(middlewareAuth, parser, async (req, res, next) => {
         try {
             const db = req.app.get('db');
             const users = await UserService.getUsers(db);
             const forums = await ForumService.getForums(db);
-
-            res.send({
+            console.log('here?');
+            console.log(users, forums);
+            return res.send({
                 data: {
-                    users, 
+                    users,
                     forums
                 }
             });
-        } catch(error){
-            next(error)
+        } catch (error) {
+            next(error);
         }
     })
-    .post( async (req,res,next) => {
+    .post(middlewareAuth, parser, async (req,res,next) => {
         try {
+            console.log(req.body)
             const { content, title } = req.body;
+            console.log(req.user)
             const user_id = req.user.id;
             const data = { title, content, user_id };
+            console.log(data)
             const forum = await ForumService.createForum(req.app.get('db'), data);
             console.log('create forum result', forum);
             
@@ -44,10 +47,35 @@ forumRouter
 );
 
 forumRouter
-    //.all(middlewareAuth)
+    .route('/:id/comment')
+    .post(middlewareAuth, parser, async (req, res, next) => {    
+        try{
+            console.log('resrser')
+            const forumID = req.params.id;
+            const db = req.app.get('db');
+            const user_id = req.user.id;
+            console.log('id' , user_id)
+            const { content } = req.body;
+            const data = {
+                content, user_id, forum_id: forumID
+            }
+
+            console.log(data)
+            const comment = await ForumService.addComment(db, data);
+            
+            return res.send({status: 'good'});
+        } catch(error){
+            next(error)
+        }
+    }
+);
+
+forumRouter
+    .all(middlewareAuth)
     .route('/:id')
     .get(async (req, res, next) => {    
         try{
+            console.log("jeress")
             const forumID = req.params.id;
             const db = req.app.get('db');
             const forum = await ForumService.getForumByID(db, forumID);
@@ -64,6 +92,8 @@ forumRouter
         }
     }
 );
+
+
 
 
 module.exports = forumRouter;

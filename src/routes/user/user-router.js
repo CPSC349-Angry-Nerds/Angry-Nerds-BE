@@ -5,7 +5,7 @@ const UserService = require('./user-service');
 const AuthorizationService = require('../authorization/authorization-service');
 
 const errorHandler = {
-  validateAuthRequest(body) {
+  validateUserRequest(body) {
     let result = {
       isError: false,
       error: ''
@@ -49,13 +49,12 @@ userRouter
       .catch(next);
   })
   .post(parser, async (req, res, next) => {
-   
     try
     {
       const { password, username } = req.body;
       const { isError, error } = errorHandler.validateUserRequest(req.body);
       const db = req.app.get('db');
-
+      
       if (isError)
         throw error;
       else {
@@ -65,7 +64,7 @@ userRouter
             const passwordError = errorHandler.validatePassword(password);
 
             if (passwordError)
-              return res.status(400).send({ error: passwordError });
+              throw new Error(`${passwordError}`);
 
             return {
               username,
@@ -73,9 +72,11 @@ userRouter
             };
           })
           .then(async (newUser) => {
-            await UserService.validateUserName(db, newUser.username)
-              ? res.status(400).send({ error: 'Username already taken' })
-              : UserService.insertUser(db, newUser);
+            const user = await UserService.validateUserName(db, newUser.username);
+            if (user) 
+              throw new Error('Username already taken');
+            else 
+              UserService.insertUser(db, newUser);
             return newUser;
           })
           .then(user => {
@@ -83,7 +84,7 @@ userRouter
             const payload = {
               username: user.username
             };
-            res.send({ authToken: AuthorizationService.createJsonWebToken(sub, payload) });
+            return res.send({ authToken: AuthorizationService.createJsonWebToken(sub, payload) });
           })
       
       }
