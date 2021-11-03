@@ -36,20 +36,20 @@ authRouter
       const errorMessage = 'Incorrect username or password';
     
       if (isError)
-        throw new Error(`${error}`);
+        return res.status(400).send({ message: `${error}`});
       else
         await AuthorizationService
           .getUser(db, username)
           .then(user => {
             if(!user)
-              throw new Error(`${errorMessage}`);
+              return res.status(400).send({ message: `${errorMessage}`});
             return user;
           })
           .then( async user => {
             const validatePassword = await AuthorizationService.comparePassword(password, user.password);
           
             if(!validatePassword)
-              throw new Error(`${errorMessage }`);
+              return res.status(400).send({ message: `${errorMessage }`});
             return user;
           })
           .then(user => {
@@ -57,11 +57,11 @@ authRouter
             const payload = {
               username: user.username,
             };
-            res.send({ authToken: AuthorizationService.createJsonWebToken(sub, payload) })
+            return res.send({ authToken: AuthorizationService.createJsonWebToken(sub, payload) })
           }
         );
       }catch(error){
-        next(error);
+         
       }
   })
   .put(middlewareAuth, (req, res, next) => {

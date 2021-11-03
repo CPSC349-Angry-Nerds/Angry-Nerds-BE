@@ -12,8 +12,7 @@ forumRouter
             const db = req.app.get('db');
             const users = await UserService.getUsers(db);
             const forums = await ForumService.getForums(db);
-            console.log('here?');
-            console.log(users, forums);
+         
             return res.send({
                 data: {
                     users,
@@ -26,14 +25,10 @@ forumRouter
     })
     .post(middlewareAuth, parser, async (req,res,next) => {
         try {
-            console.log(req.body)
             const { content, title } = req.body;
-            console.log(req.user)
             const user_id = req.user.id;
             const data = { title, content, user_id };
-            console.log(data)
             const forum = await ForumService.createForum(req.app.get('db'), data);
-            console.log('create forum result', forum);
             
             res.send({
                 data: {
@@ -68,9 +63,8 @@ forumRouter
 );
 
 forumRouter
-    .all(middlewareAuth)
     .route('/:id')
-    .get(async (req, res, next) => {    
+    .get(middlewareAuth, async (req, res, next) => {    
         try{
             const forumID = req.params.id;
             const db = req.app.get('db');
