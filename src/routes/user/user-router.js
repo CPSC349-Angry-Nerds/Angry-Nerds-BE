@@ -74,7 +74,7 @@ userRouter
             const passwordError = errorHandler.validatePassword(password);
 
             if (passwordError)
-              throw new Error(`${passwordError}`);
+              throw Error(`${passwordError}`);
 
             return {
               username,
@@ -84,7 +84,7 @@ userRouter
           .then(async (newUser) => {
             const user = await UserService.validateUserName(db, newUser.username);
             if (user) 
-              throw new Error('Username already taken');
+              throw Error('Username already taken');
             else 
               UserService.insertUser(db, newUser);
             return newUser;
