@@ -50,17 +50,14 @@ forumRouter
     .route('/:id/comment')
     .post(middlewareAuth, parser, async (req, res, next) => {    
         try{
-            console.log('resrser')
             const forumID = req.params.id;
             const db = req.app.get('db');
             const user_id = req.user.id;
-            console.log('id' , user_id)
             const { content } = req.body;
             const data = {
                 content, user_id, forum_id: forumID
             }
 
-            console.log(data)
             const comment = await ForumService.addComment(db, data);
             
             return res.send({status: 'good'});
@@ -75,7 +72,6 @@ forumRouter
     .route('/:id')
     .get(async (req, res, next) => {    
         try{
-            console.log("jeress")
             const forumID = req.params.id;
             const db = req.app.get('db');
             const forum = await ForumService.getForumByID(db, forumID);
