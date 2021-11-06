@@ -17,7 +17,6 @@ async function middlewareAuth(req, res, next) {
     if (!user)
       return res.status(401).json({ error: 'Unauthorized Request' });
     req.user = user;
-    console.log(user, 'user')
     next();
   } catch (error) {
     if (error instanceof JsonWebTokenError)
