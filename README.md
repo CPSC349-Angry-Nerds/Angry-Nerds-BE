@@ -22,12 +22,12 @@ Install Node Package Manager and Visual Studio Code
 Copy git respository to local machine
 
 ```
-git clone https://github.com/CPSC349-Angry-Nerds/Angry-Nerds-BE.git angry-frontend
+git clone https://github.com/CPSC349-Angry-Nerds/Angry-Nerds-BE.git angry-backend
 ```
 `cd` into the cloned repository
 
 ```
-cd angry-frontend
+cd angry-backend
 ```
 Make a fresh start of the git history for this project with 
 ```
