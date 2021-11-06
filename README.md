@@ -2,6 +2,9 @@
 
 Angry Nerds project Server that will interact through CRUD(create, read, update, delete) services on a Postgres database.
 
+* [Angery Nerds Frontend](https://github.com/CPSC349-Angry-Nerds/Angery-Nerds-FE)
+* [Angery Nerds Backend](https://github.com/CPSC349-Angry-Nerds/Angry-Nerds-BE)
+
 ## Live Application
 
 * [Angery Nerds](https://angry-nerds.vercel.app/)
@@ -70,7 +73,3 @@ npm run dev
 * **Uyen Le**
 * **Jose Arce**
 * **Kevin Tu**
-
-## License
-
-
