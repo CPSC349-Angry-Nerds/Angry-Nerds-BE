@@ -15,7 +15,7 @@ These instructions will get you a copy of the Angry Nerds Server up and running 
 
 ### Prerequisites
 
-Install Node Package Manager and Visual Studio Code
+Install Node Package Manager and Visual Studio Code. You also need to have a sql database, if you do not have one you can make an application on Heroku and add the postgres extension. From that, you will be able to fill out the database connection variables.
 
 ### Installing
 
